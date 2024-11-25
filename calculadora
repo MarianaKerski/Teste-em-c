@@ -1,0 +1,115 @@
+using System.Text.RegularExpressions;
+
+class Calculator
+{
+    public static double DoOperation(double num1, double num2, string op)
+    {
+        double result = double.NaN; // Default value is "not-a-number" which we use if an operation, such as division, could result in an error.
+
+        
+        switch (op)
+        {
+            case "a":
+                result = num1 + num2;
+                break;
+            case "s":
+                result = num1 - num2;
+                break;
+            case "m":
+                result = num1 * num2;
+                break;
+            case "d":
+            
+                if (num2 != 0)
+                {
+                    result = num1 / num2;
+                }
+                break;
+        
+            default:
+                break;
+        }
+        return result;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        bool endApp = false;
+    
+        Console.WriteLine("Console Calculator in C#\r");
+        Console.WriteLine("------------------------\n");
+
+        while (!endApp)
+        {
+       
+            string? numInput1 = "";
+            string? numInput2 = "";
+            double result = 0;
+
+            // Ask the user to type the first number.
+            Console.Write("Digite um número, e pressione enter: ");
+            numInput1 = Console.ReadLine();
+
+            double cleanNum1 = 0;
+            while (!double.TryParse(numInput1, out cleanNum1))
+            {
+                Console.Write("Por favor, digite um número válido: ");
+                numInput1 = Console.ReadLine();
+            }
+
+            // Ask the user to type the second number.
+            Console.Write("Digite outro número, e pressione enter: ");
+            numInput2 = Console.ReadLine();
+
+            double cleanNum2 = 0;
+            while (!double.TryParse(numInput2, out cleanNum2))
+            {
+                Console.Write("Digite um número, e pressione enter: ");
+                numInput2 = Console.ReadLine();
+            }
+
+            // Ask the user to choose an operator.
+            Console.WriteLine("Escolha seu operador na lista abaixo:");
+            Console.WriteLine("\ta - Add");
+            Console.WriteLine("\ts - Subtrair");
+            Console.WriteLine("\tm - Multiplicar");
+            Console.WriteLine("\td - Dividir");
+            Console.Write("Sua opção? ");
+
+            string? op = Console.ReadLine();
+
+            // Validate input is not null, and matches the pattern
+            if (op == null || !Regex.IsMatch(op, "[a|s|m|d]"))
+            {
+                Console.WriteLine("Error: opção desconhecida.");
+            }
+            else
+            {
+                try
+                {
+                    result = Calculator.DoOperation(cleanNum1, cleanNum2, op);
+                    if (double.IsNaN(result))
+                    {
+                        Console.WriteLine("Essa operação resultou em um erro matemático.\n");
+                    }
+                    else Console.WriteLine("Seu resultado: {0:0.##}\n", result);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+                }
+            }
+            Console.WriteLine("------------------------\n");
+
+            // Wait for the user to respond before closing.
+            Console.Write("Pressione N para sair ou qualquer outra tecla e Enter para continuar: ");
+            if (Console.ReadLine() == "n") endApp = true;
+
+            Console.WriteLine("\n"); 
+        }
+        return;
+    }
+}
